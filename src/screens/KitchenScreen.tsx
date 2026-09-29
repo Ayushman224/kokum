@@ -5,7 +5,7 @@ import DishArt from '../ui/DishArt'
 import DragToken from '../ui/DragToken'
 import IngredientIcon from '../ui/IngredientIcon'
 import { MagneticButton, Particles, Ripple, Steam } from '../ui/Effects'
-import { kitchenGame, menu } from '../data/restaurant'
+import { kitchenGame, maxDiscount, menu } from '../data/restaurant'
 import type { IconKey } from '../data/types'
 import { useStore } from '../state/store'
 import { pointInside, useAfter } from '../lib/hooks'
@@ -279,7 +279,7 @@ export default function KitchenScreen() {
               <div className="mt-5 flex flex-col gap-2.5">
                 <MagneticButton onClick={() => setLeaving(false)}>Continue cooking</MagneticButton>
                 <MagneticButton variant="ghost" onClick={() => go('quiz')}>
-                  Skip to the quiz
+                  Skip game → {maxDiscount}% off
                 </MagneticButton>
                 <button type="button" onClick={() => go('story')} className="eyebrow min-h-11 text-ivory/50">
                   Back to the dish

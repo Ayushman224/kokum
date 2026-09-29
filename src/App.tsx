@@ -13,6 +13,7 @@ import ReviewScreen from './screens/ReviewScreen'
 import RewardScreen from './screens/RewardScreen'
 import FinaleScreen from './screens/FinaleScreen'
 import { maxDiscount } from './data/restaurant'
+import { sound } from './lib/sound'
 
 const SCREENS: Record<Screen, ComponentType> = {
   menu: MenuScreen,
@@ -39,9 +40,38 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <StoreProvider>{framed ? <DesktopFrame vp={vp} /> : <div className="fixed inset-0"><Stage /></div>}</StoreProvider>
+      <StoreProvider>
+        <SoundBoot />
+        {framed ? <DesktopFrame vp={vp} /> : <div className="fixed inset-0"><Stage /></div>}</StoreProvider>
     </MotionConfig>
   )
+}
+
+/**
+ * Turns the click sound on with the guest's first touch (browsers block audio before that),
+ * unless they muted it on a previous visit. Every button then gets a soft tap sound.
+ */
+function SoundBoot() {
+  const { setSoundOn } = useStore()
+  useEffect(() => {
+    const first = () => {
+      if (!sound.prefersMuted && !sound.enabled) {
+        sound.setEnabled(true)
+        setSoundOn(true)
+      }
+    }
+    const tap = (e: MouseEvent) => {
+      const el = (e.target as Element | null)?.closest('button, a, [role="radio"]')
+      if (el && !el.closest('[aria-label="Turn sound on"], [aria-label="Turn sound off"]')) sound.tap()
+    }
+    document.addEventListener('pointerdown', first, { once: true })
+    document.addEventListener('click', tap)
+    return () => {
+      document.removeEventListener('pointerdown', first)
+      document.removeEventListener('click', tap)
+    }
+  }, [setSoundOn])
+  return null
 }
 
 /** The phone-sized stage every screen renders into. No page scroll; screens cross-dissolve. */

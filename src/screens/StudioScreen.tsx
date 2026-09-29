@@ -179,7 +179,6 @@ export default function StudioScreen() {
                   role="radio"
                   aria-checked={layout === l}
                   onClick={() => {
-                    sound.tap()
                     setLayout(l)
                   }}
                   className={`min-h-10 rounded-full px-4 text-[10.5px] font-bold uppercase tracking-[0.14em] transition-colors ${layout === l ? 'bg-gold text-ink' : 'border border-white/15 text-ivory/65'}`}

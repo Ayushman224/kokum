@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowRight, Lock } from 'lucide-react'
 import DishArt from '../ui/DishArt'
 import BowlArt from '../ui/BowlArt'
-import { Particles } from '../ui/Effects'
+import { Particles, Steam } from '../ui/Effects'
 import { maxDiscount, menu, restaurant, rewardRules } from '../data/restaurant'
 import { useStore } from '../state/store'
 import { sound, haptic } from '../lib/sound'
@@ -72,11 +73,13 @@ export default function MenuScreen() {
               whileTap={{ scale: 0.98 }}
               aria-label={`Experience ${d.name}`}
             >
-              <div className="relative mx-auto -mb-6 mt-2 w-[78%]">
-                <motion.div animate={{ rotate: 360 }} transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}>
-                  <DishArt className="w-full" image={d.image} />
-                </motion.div>
-              </div>
+              {d.image ? <HeroPhoto src={d.image} credit={d.imageCredit} alt={d.name} /> : (
+                <div className="relative mx-auto -mb-6 mt-2 w-[78%]">
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}>
+                    <DishArt className="w-full" />
+                  </motion.div>
+                </div>
+              )}
               <div className="relative bg-gradient-to-t from-black/70 to-transparent px-5 pb-5 pt-8">
                 <div className="flex items-center gap-2">
                   <span className="eyebrow text-[9px] text-gold">Story {d.storyNumber}</span>
@@ -102,7 +105,6 @@ export default function MenuScreen() {
                 key={d.id}
                 type="button"
                 onClick={() => {
-                  sound.tap()
                   showToast('This story is coming soon. Scan the QR beside this dish when it goes live.')
                 }}
                 className="relative overflow-hidden rounded-[20px] border border-white/10 bg-white/[0.02] p-3 text-left"
@@ -127,6 +129,38 @@ export default function MenuScreen() {
         </div>
         <p className="mt-8 text-center font-serif text-[15px] italic text-ivory/40">{restaurant.hashtag}</p>
       </div>
+    </div>
+  )
+}
+
+/** Full-bleed, colour-graded hero photo with a slow "Ken Burns" drift. Falls back to the illustration. */
+function HeroPhoto({ src, alt, credit }: { src: string; alt: string; credit?: string }) {
+  const [failed, setFailed] = useState(false)
+  if (failed) {
+    return (
+      <div className="relative mx-auto -mb-6 mt-2 w-[78%]">
+        <DishArt className="w-full" />
+      </div>
+    )
+  }
+  return (
+    <div className="relative -mb-10 aspect-[4/3.4] w-full overflow-hidden">
+      <motion.img
+        src={src}
+        alt={alt}
+        decoding="async"
+        onError={() => setFailed(true)}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: 'brightness(.88) contrast(1.15) saturate(1.1) sepia(.12)' }}
+        initial={{ scale: 1.18 }}
+        animate={{ scale: [1.18, 1.08, 1.18], x: ['0%', '-2%', '0%'] }}
+        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      {/* warm light + dark edges so the photo melts into the card */}
+      <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(90% 70% at 30% 25%, rgba(255,205,140,.6), rgba(90,40,15,.4) 75%)' }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 90% at 50% 35%, transparent 45%, rgba(11,9,8,.7) 100%), linear-gradient(180deg, rgba(11,9,8,.35) 0%, transparent 25%, transparent 55%, #120e0b 100%)' }} />
+      <Steam className="absolute left-[52%] top-[18%] w-[34%] opacity-70" />
+      {credit && <span className="absolute right-3 top-3 text-[8.5px] tracking-wide text-ivory/35">{credit}</span>}
     </div>
   )
 }

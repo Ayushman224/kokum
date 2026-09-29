@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useState } from 'react'
 
 interface Props {
   className?: string
@@ -19,8 +19,33 @@ export default function DishArt({ className = '', glow = 0, title, image }: Prop
   const id = (s: string) => `${raw}-${s}`
   const alt = title ?? 'Appam and vegetable stew, illustrated'
 
-  if (image) {
-    return <img src={image} alt={alt} className={`rounded-full object-cover ${className}`} draggable={false} />
+  const [failed, setFailed] = useState(false)
+
+  // Real photo, graded to sit in the Kokum palette: warm, deep shadows, soft vignette, gold rim.
+  // Falls back to the illustration if the photo can't load (e.g. offline).
+  if (image && !failed) {
+    return (
+      <div
+        className={`relative aspect-square overflow-hidden rounded-full ${className}`}
+        role="img"
+        aria-label={title ?? 'Appam and vegetable stew'}
+        style={{ boxShadow: `0 0 0 1px rgba(216,176,106,.45), 0 30px 60px -20px rgba(0,0,0,.9), 0 0 ${40 + glow * 60}px -10px rgba(240,170,90,${0.25 + glow * 0.4})` }}
+      >
+        <img
+          src={image}
+          alt=""
+          crossOrigin="anonymous"
+          decoding="async"
+          draggable={false}
+          onError={() => setFailed(true)}
+          className="absolute inset-0 h-full w-full scale-[1.12] object-cover"
+          style={{ filter: 'brightness(.9) contrast(1.14) saturate(1.12) sepia(.1)' }}
+        />
+        <div className="absolute inset-0 mix-blend-soft-light" style={{ background: 'radial-gradient(circle at 35% 30%, rgba(255,210,150,.55), rgba(120,60,20,.35) 70%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at 50% 48%, transparent 48%, rgba(11,9,8,.55) 78%, rgba(11,9,8,.9) 100%)' }} />
+        <div className="absolute inset-[3%] rounded-full border border-gold/25" />
+      </div>
+    )
   }
 
   const leaf = (x: number, y: number, r: number, s = 1, key?: string) => (

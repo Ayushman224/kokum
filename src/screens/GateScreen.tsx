@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Play } from 'lucide-react'
 import { Particles } from '../ui/Effects'
+import { maxDiscount } from '../data/restaurant'
 import { useStore } from '../state/store'
 import { sound, haptic } from '../lib/sound'
 
@@ -51,8 +52,16 @@ export default function GateScreen() {
           </span>
         </motion.button>
 
-        <motion.button type="button" onClick={() => go('quiz')} className="eyebrow mt-auto mb-10 min-h-12 px-6 text-ivory/50 hover:text-ivory" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
-          Skip the game →
+        <motion.button
+          type="button"
+          onClick={() => go('quiz')}
+          className="mt-auto mb-10 flex min-h-12 flex-col items-center justify-center px-6 text-ivory/50 hover:text-ivory"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          <span className="eyebrow">Skip the game →</span>
+          <span className="mt-1 text-[11px] tracking-[0.08em] text-gold/80">Moves you to {maxDiscount}% off</span>
         </motion.button>
       </div>
     </div>

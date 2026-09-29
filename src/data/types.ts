@@ -29,6 +29,8 @@ export interface Dish {
   tagline: string
   /** Real photo URL (put files in /public). null → built-in illustration. */
   image: string | null
+  /** Photographer credit shown small under the photo, if needed. */
+  imageCredit?: string
   /** Only live dishes open the full experience; the rest show "coming soon". */
   live: boolean
   /** Colour of the illustrated bowl for dishes without a photo. */

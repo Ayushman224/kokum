@@ -24,7 +24,10 @@ export const menu: Dish[] = [
     name: 'Appam & Vegetable Stew',
     shortName: 'Appam & Stew',
     tagline: 'Lace-edged appam, coconut-milk stew.',
-    image: null,
+    // Stand-in photo: Anil Sharma on Unsplash (free Unsplash License) — https://unsplash.com/photos/fXJqaLjRpYg
+    // Replace with Kokum's own photo, e.g. '/dishes/appam-stew.jpg' in /public.
+    image: 'https://images.unsplash.com/photo-1738986586839-93af00b40dd8?auto=format&fit=crop&w=1000&q=80',
+    imageCredit: 'Photo: Anil Sharma / Unsplash',
     live: true,
     tone: '#efdcb3',
   },

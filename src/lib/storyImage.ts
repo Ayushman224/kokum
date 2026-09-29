@@ -78,9 +78,10 @@ export async function renderStoryPng(layout: CardLayout, photo: string | null, d
   bgp.addColorStop(1, '#0e0b09')
   c.fillStyle = bgp
   c.fillRect(px, py, pw, ph)
-  const img = photo ? await loadImage(photo) : dishSvg ? await svgToImage(dishSvg) : null
+  const img = photo ? await loadImage(photo) : (dish.image ? await loadImage(dish.image) : null) ?? (dishSvg ? await svgToImage(dishSvg) : null)
+  const isPhoto = !!photo || (!!dish.image && !!img && !(img.src.startsWith('data:image/svg')))
   if (img) {
-    if (photo) {
+    if (isPhoto) {
       c.filter = 'saturate(1.05) contrast(1.04) sepia(.08)'
       cover(c, img, px, py, pw, ph)
       c.filter = 'none'
@@ -202,6 +203,7 @@ function spaced(c: CanvasRenderingContext2D, text: string, x: number, y: number,
 function loadImage(src: string) {
   return new Promise<HTMLImageElement | null>((res) => {
     const i = new Image()
+    if (/^https?:/.test(src)) i.crossOrigin = 'anonymous' // keeps the canvas exportable
     i.onload = () => res(i)
     i.onerror = () => res(null)
     i.src = src

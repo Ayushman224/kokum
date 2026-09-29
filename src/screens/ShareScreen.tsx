@@ -7,7 +7,7 @@ import { menu, restaurant, rewardRules } from '../data/restaurant'
 import { useStore } from '../state/store'
 import { renderStoryPng } from '../lib/storyImage'
 import { copyText, downloadDataUrl, nativeShareImage, shareText, storyUrl, whatsappUrl } from '../lib/share'
-import { sound, haptic } from '../lib/sound'
+import { haptic } from '../lib/sound'
 
 const ease = [0.16, 1, 0.3, 1] as const
 const SHARE = rewardRules.find((r) => r.id === 'share')!
@@ -77,7 +77,6 @@ export default function ShareScreen() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => {
-              sound.tap()
               haptic()
               claim()
             }}
@@ -138,7 +137,6 @@ function ShareBtn({ onClick, disabled, tone, label, icon }: { onClick: () => voi
     <button
       type="button"
       onClick={() => {
-        sound.tap()
         haptic()
         onClick()
       }}
