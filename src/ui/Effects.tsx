@@ -1,6 +1,6 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { motion, useMotionValue, useSpring, useReducedMotion, type HTMLMotionProps } from 'framer-motion'
-import { sound, haptic } from '../../lib/sound'
+import { sound, haptic } from '../lib/sound'
 
 /** Slow-rising embers. CSS-only animation — cheap on mid-range phones. */
 export function Particles({ count = 18, color = '#d8b06a', className = '' }: { count?: number; color?: string; className?: string }) {

@@ -111,6 +111,8 @@ export const sound = {
 /** Haptic-style nudge on devices that support it (Android). Silent elsewhere. */
 export function haptic(ms: number | number[] = 8) {
   try {
+    // Only after a real tap — browsers block (and log) vibration otherwise.
+    if ((navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation?.hasBeenActive === false) return
     navigator.vibrate?.(ms)
   } catch {
     /* unsupported */

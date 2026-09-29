@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import { motion, useAnimationControls } from 'framer-motion'
 import IngredientIcon from './IngredientIcon'
-import type { IconKey } from '../../data/types'
-import { sound, haptic } from '../../lib/sound'
+import type { IconKey } from '../data/types'
+import { sound, haptic } from '../lib/sound'
 
 interface Props {
   label: string

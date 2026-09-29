@@ -1,25 +1,25 @@
-import type { TasteProfile } from '../data/types'
+import { restaurant } from '../data/restaurant'
 
 /**
- * Prototype share link. Production: a signed referral URL per guest
- * (e.g. https://kokum.app/s/<token>) so opens can be attributed and counted.
+ * Prototype share link. Production: a signed per-guest URL so opens/likes can be
+ * attributed and verified (that is what would unlock the "10 likes" reward automatically).
  */
-export function buildShareUrl(dishId: string, profile: TasteProfile) {
-  let base = 'https://kokum.example/stories'
+export function storyUrl(dishId: string, code: string) {
+  let base = 'https://kokum.example/'
   try {
     const { origin, pathname } = window.location
-    if (origin && origin !== 'null' && !origin.startsWith('blob:')) base = origin + pathname
+    if (origin.startsWith('http')) base = origin + pathname
   } catch {
-    /* sandboxed frame — keep placeholder base */
+    /* sandboxed */
   }
-  const url = new URL(base)
-  url.searchParams.set('story', dishId)
-  url.searchParams.set('taste', profile.id)
-  return url.toString()
+  const u = new URL(base)
+  u.searchParams.set('story', dishId)
+  u.searchParams.set('ref', code.toLowerCase())
+  return u.toString()
 }
 
-export function buildShareText(profile: TasteProfile, hashtag: string) {
-  return `I just discovered my Kokum Taste 👀\nI got ${profile.title.toUpperCase()}.\nWhat would you get?\n${hashtag}`
+export function shareText(dishName: string) {
+  return `I just discovered the story behind my dish at Kokum 🍛\nMy ${dishName} story is ready.\nWhat would yours be?\n${restaurant.instagramHandle} ${restaurant.hashtag}`
 }
 
 export function whatsappUrl(text: string, url: string) {
@@ -33,12 +33,11 @@ export async function copyText(text: string): Promise<boolean> {
       return true
     }
   } catch {
-    /* fall through to legacy path (clipboard can be blocked inside iframes) */
+    /* fall through */
   }
   try {
     const ta = document.createElement('textarea')
     ta.value = text
-    ta.setAttribute('readonly', '')
     ta.style.position = 'fixed'
     ta.style.opacity = '0'
     document.body.appendChild(ta)
@@ -49,4 +48,28 @@ export async function copyText(text: string): Promise<boolean> {
   } catch {
     return false
   }
+}
+
+/** Native share sheet with the card image when the phone supports it (iOS/Android). */
+export async function nativeShareImage(dataUrl: string, text: string): Promise<boolean> {
+  try {
+    const blob = await (await fetch(dataUrl)).blob()
+    const file = new File([blob], 'kokum-story.png', { type: 'image/png' })
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], text })
+      return true
+    }
+  } catch {
+    /* cancelled or unsupported */
+  }
+  return false
+}
+
+export function downloadDataUrl(dataUrl: string, name = 'kokum-story.png') {
+  const a = document.createElement('a')
+  a.href = dataUrl
+  a.download = name
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
 }

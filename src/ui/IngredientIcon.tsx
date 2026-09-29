@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { IconKey } from '../../data/types'
+import type { IconKey } from '../data/types'
 
 const G = '#d8b06a'
 
@@ -103,6 +103,15 @@ const icons: Record<IconKey, ReactElement> = {
       <circle cx="35" cy="26" r="2.4" fill="#7fa044" />
       <circle cx="27" cy="38" r="2.4" fill="#7fa044" />
       <rect x="31" y="31" width="6" height="5" rx="1.5" fill="#e6c77f" />
+    </>
+  ),
+  carrot: (
+    <>
+      <path d="M14 52 L 40 20 C 46 14, 54 20, 48 26 Z" fill="#e07b35" stroke={G} strokeOpacity=".4" />
+      {[[22, 42], [28, 35], [34, 28]].map(([x, y], i) => (
+        <path key={i} d={`M${x} ${y} l 5 3`} stroke="#b85a22" strokeWidth="1.2" />
+      ))}
+      <path d="M44 22 C 46 12, 52 8, 56 8 M 46 24 C 54 20, 58 22, 60 24 M 45 23 C 48 14, 56 14, 58 16" stroke="#5f8a33" strokeWidth="2.4" strokeLinecap="round" fill="none" />
     </>
   ),
   herbs: (

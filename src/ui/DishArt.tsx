@@ -1,25 +1,26 @@
 import { useId } from 'react'
-import { dishData } from '../../data/dishData'
 
 interface Props {
   className?: string
+  /** Real photo URL — when set it replaces the illustration. */
+  image?: string | null
   /** 0–1: how "finished" the stew looks (used by the chef game). */
   glow?: number
   title?: string
 }
 
 /**
- * The hero plate. If dishData.heroImage is set, the real photograph is used.
+ * The hero plate. If `image` is set, the real photograph is used.
  * Otherwise a hand-built SVG illustration of appam + vegetable stew is drawn —
  * no network requests, sharp at any size, ~0 KB of images for fast QR loading.
  */
-export default function DishArt({ className = '', glow = 0, title }: Props) {
+export default function DishArt({ className = '', glow = 0, title, image }: Props) {
   const raw = useId().replace(/:/g, '')
   const id = (s: string) => `${raw}-${s}`
-  const alt = title ?? `${dishData.name} — illustrated`
+  const alt = title ?? 'Appam and vegetable stew, illustrated'
 
-  if (dishData.heroImage) {
-    return <img src={dishData.heroImage} alt={alt} className={`rounded-full object-cover ${className}`} draggable={false} />
+  if (image) {
+    return <img src={image} alt={alt} className={`rounded-full object-cover ${className}`} draggable={false} />
   }
 
   const leaf = (x: number, y: number, r: number, s = 1, key?: string) => (
